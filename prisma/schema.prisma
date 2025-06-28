@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql" // ubah dari "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -11,10 +11,10 @@ model User {
   email    String       @id @db.VarChar(100)
   name     String       @db.VarChar(255)
   password String       @db.VarChar(255)
-  address  String?      @db.Text
+  address  String?
   role     String       @db.VarChar(10)
-  sessions Session[]
   charts   ChartOrder[]
+  sessions Session[]
 
   @@map("users")
 }
@@ -42,9 +42,9 @@ model Merchandise {
   stock       Int
   price       Int
   image_url   String              @db.VarChar(255)
-  category    Category            @relation(fields: [id_category], references: [id])
-  details     MerchandiseDetail[]
   charts      ChartOrder[]
+  details     MerchandiseDetail[]
+  category    Category            @relation(fields: [id_category], references: [id])
 
   @@map("merchandises")
 }
@@ -52,7 +52,7 @@ model Merchandise {
 model MerchandiseDetail {
   id             Int         @id @default(autoincrement())
   id_merchandise String      @db.VarChar(50)
-  detail         String      @db.Text
+  detail         String
   merchandise    Merchandise @relation(fields: [id_merchandise], references: [id])
 
   @@map("merchandise_details")
