@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ADMIN</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+            crossorigin="anonymous"></script>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #3e5452; padding: 0.5em 0.5em 1em 0.5em;">
+    <div class="container d-flex">
+        <a class="navbar-brand fw-bold" href="/">ALLMERCH</a>
+        <button class="navbar-toggler" style="border: none; color: transparent;" type="button"
+                data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav" style="gap: 1em;">
+                {{#user}}
+                    <li class="nav-item" style="padding: 0.2em 1em; border-radius: 8px;">
+                        <a class="nav-link active" href="/admin/orders">Order</a>
+                    </li>
+                    <li class="nav-item" style="padding: 0.2em 1em; border-radius: 8px;">
+                        <a class="nav-link active" href="/logout">Logout</a>
+                    </li>
+                {{/user}}
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container col-xl-10 col-xl-8 px-0 py-5">
+    <div class="row align-items-right g-lg-5 py-5">
+        <div class="mx-auto">
+            <div class="d-flex justify-content-between mb-3">
+                <h3>Merchandise List</h3>
+                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addMerchandiseModal">
+                    + Add Merchandise
+                </button>
+            </div>
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th class="text-center" scope="col">No</th>
+                    <th class="text-center" scope="col">Image</th>
+                    <th class="text-center" scope="col">ID</th>
+                    <th class="text-center" scope="col">Category</th>
+                    <th class="text-center" scope="col">Name</th>
+                    <th class="text-center" scope="col">Stock</th>
+                    <th class="text-center" scope="col">Price (Rp)</th>
+                    <th class="text-center" scope="col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{#merchandises}}
+                    <tr>
+                        <th class="text-center align-middle" scope="row"></th>
+                        <td class="text-center align-middle">
+                            <img src="{{image_url}}" alt="{{name}}" width="100" class="img-fluid">
+                        </td>
+                        <td class="text-center align-middle">{{id}}</td>
+                        <td class="text-center align-middle">{{category.name}}</td>
+                        <td class="text-center align-middle">{{name}}</td>
+                        <td class="text-center align-middle">{{stock}}</td>
+                        <td class="text-center align-middle">{{price}}</td>
+                        <td class="text-center align-middle">
+                            <button class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#editMerchandiseModal-{{id}}">
+                                <i class="bi bi-pencil"></i>
+                            </button>
+                            <form action="/admin/merchandise/delete" method="post" style="display:inline;"
+                                  onsubmit="return confirm('Are you sure you want to delete merchandise with id {{id}}?');">
+                                <input type="hidden" name="id" value="{{id}}">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </form>
+                            <button class="btn btn-success" data-bs-toggle="modal"
+                                    data-bs-target="#addDetailModal-{{id}}">
+                                <i class="bi bi-plus-circle"></i>
+                            </button>
+                        </td>
+                    </tr>
+                {{/merchandises}}
+                {{^merchandises}}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted">No merchandise data found!</td>
+                    </tr>
+                {{/merchandises}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Form for Adding Merchandise -->
+<div class="modal fade" id="addMerchandiseModal" tabindex="-1" aria-labelledby="addMerchandiseModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+
+        <form action="/admin/merchandise" method="post" enctype="multipart/form-data" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addMerchandiseModalLabel">Add New Merchandise</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="mb-3">
+                    <label for="name" class="form-label">Name</label>
+                    <input type="text" id="name" name="name" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="id_category" class="form-label">Category</label>
+                    <select id="id_category" name="id_category" class="form-select" required>
+                        {{#categories}}
+                            <option value="{{id}}">{{name}}</option>
+                        {{/categories}}
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="stock" class="form-label">Stock</label>
+                    <input type="number" id="stock" name="stock" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price (Rp)</label>
+                    <input type="number" id="price" name="price" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image</label>
+                    <input type="file" id="image" name="image" accept="image/*" class="form-control" required>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Merchandise Modal -->
+{{#merchandises}}
+    <div class="modal fade" id="editMerchandiseModal-{{id}}" tabindex="-1"
+         aria-labelledby="editMerchandiseModalLabel-{{id}}" aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="/admin/merchandise/update" method="post" enctype="multipart/form-data" class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editMerchandiseModalLabel-{{id}}">Edit Merchandise</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="id" class="form-label">ID</label>
+                        <input type="text" id="id" name="id" class="form-control" value="{{id}}" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" id="name" name="name" class="form-control" value="{{name}}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="id_category" class="form-label">Category</label>
+                        <select id="id_category" name="id_category" class="form-select" required>
+                            {{#categories}}
+                                <option value="{{id}}" {{#is_selected}}{{selected}}{{/is_selected}}>{{name}}</option>
+                            {{/categories}}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="stock" class="form-label">Stock</label>
+                        <input type="number" id="stock" name="stock" class="form-control" value="{{stock}}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="price" class="form-label">Price (Rp)</label>
+                        <input type="number" id="price" name="price" class="form-control" value="{{price}}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Replace Image (optional)</label>
+                        <input type="file" id="image" name="image" accept="image/*" class="form-control">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{{/merchandises}}
+
+<!-- Modal Tambah Detail -->
+{{#merchandises}}
+    <div class="modal fade" id="addDetailModal-{{id}}" tabindex="-1" aria-labelledby="addDetailModalLabel-{{id}}"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <form action="/admin/merchandise/details" method="post" class="modal-content">
+                <input type="hidden" name="id_merchandise" value="{{id}}" readonly>
+                <!-- Jika ingin juga terlihat tapi readonly -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDetailModalLabel-{{id}}">Tambah Detail untuk {{name}}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="detail-fields-{{id}}">
+                        <div class="input-group mb-2">
+                            {{#details}}
+                                <div class="input-group mb-2">
+                                    <input type="text" name="details[]" class="form-control" placeholder="Masukkan detail" value="{{detail}}" required>
+                                    <button type="button" class="btn btn-outline-secondary remove-detail-button" onclick="this.closest('.input-group').remove()">Hapus</button>
+                                </div>
+                            {{/details}}
+
+                            <!-- Jika belum ada details, tampilkan 1 input kosong -->
+                            {{^details}}
+                                <div class="input-group mb-2">
+                                    <input type="text" name="details[]" class="form-control" placeholder="Masukkan detail" required>
+                                    <button type="button" class="btn btn-outline-secondary remove-detail-button" onclick="this.closest('.input-group').remove()">Hapus</button>
+                                </div>
+                            {{/details}}
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-link" onclick="addDetailField('{{id}}')">+ Tambah detail
+                    </button>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Simpan Detail</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+{{/merchandises}}
+
+<footer class="text-center py-3" style="background-color: #3e5452; color: white;">
+    <small>&copy; 2025 ALLMERCH. All rights reserved.</small>
+</footer>
+<!--<script src="script.js"></script>-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+        integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+        crossorigin="anonymous"></script>
+<script>
+    function addDetailField(id) {
+        const container = document.getElementById(`detail-fields-${id}`);
+        const inputGroup = document.createElement('div');
+        inputGroup.className = 'input-group mb-2';
+        inputGroup.innerHTML = `
+      <input type="text" name="details[]" class="form-control" placeholder="Masukkan detail" required>
+      <button type="button" class="btn btn-outline-secondary remove-detail-button" onclick="this.closest('.input-group').remove()">Hapus</button>
+    `;
+        container.appendChild(inputGroup);
+    }
+</script>
+</body>
+</html>
