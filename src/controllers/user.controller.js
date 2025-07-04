@@ -89,7 +89,7 @@ const charts = async (req, res, next) => {
         const rawCharts = await chartService.getAllChartsByUser(res.locals.user.email);
 
         // ✅ Filter hanya yang belum dibayar
-        const unpaidCharts = rawCharts.filter(chart => chart.status_payment !== "paid" && chart.status_payment !== "pending");
+        const unpaidCharts = rawCharts.filter(chart => chart.status_payment !== "paid");
 
         const charts = unpaidCharts.map((chart) => ({
             ...chart,
