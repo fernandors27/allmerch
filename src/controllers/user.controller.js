@@ -197,7 +197,7 @@ const checkoutAll = async (req, res, next) => {
                 chartService.updateStatus({
                     body: {
                         id: chart.id,
-                        status_payment: ["paid", "pending"],
+                        status_payment: "paid",
                         status_order: "processing"
                     }
                 })
