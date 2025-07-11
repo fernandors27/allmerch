@@ -64,7 +64,7 @@ Proyek ini dibuat untuk membantu pembeli mengakses dan membeli produk dari suatu
   ➤ Ide konsep, desain antarmuka web (UI/UX), dan pengembangan awal menggunakan PHP.
 
 - **Fattan Haydar Ahmad** (24SA31A021)  
-  ➤ *(Silakan tambahkan peran di sini)*
+  ➤ Recorder.
 
 ---
 
