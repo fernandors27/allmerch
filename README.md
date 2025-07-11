@@ -73,6 +73,7 @@ Proyek ini dibuat untuk membantu pembeli mengakses dan membeli produk dari suatu
 ```
 allmerch/
 ├── docs/
+├── dokumentasi/
 ├── prisma/
 │   ├── migrations/
 │       ├── 20250527121144_create_all_tables/
@@ -113,10 +114,10 @@ allmerch/
 ├── test/
 ├── .env
 ├── .gitignore
+├── README.md
 ├── babel.config.json
 ├── package-lock.json
-├── package.json
-└── README.md
+└── package.json
 ```
 
 ---
